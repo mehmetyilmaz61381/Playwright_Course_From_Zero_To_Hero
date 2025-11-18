@@ -1,0 +1,89 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - list [ref=e2]:
+    - listitem [ref=e3]:
+      - link "Home" [ref=e4]:
+        - /url: /
+    - listitem [ref=e5]:
+      - link "Main Content" [ref=e6]:
+        - /url: "#main"
+  - banner [ref=e7]:
+    - generic [ref=e8]:
+      - link "DWB" [ref=e10]:
+        - /url: /
+      - generic [ref=e11]:
+        - list [ref=e12]:
+          - listitem [ref=e13]:
+            - link [ref=e14]:
+              - /url: /feed
+          - listitem [ref=e15]:
+            - link [ref=e16]:
+              - /url: //twitter.com/davidwalshblog
+          - listitem [ref=e17]:
+            - link [ref=e18]:
+              - /url: //facebook.com/davidwalshblog
+          - listitem [ref=e19]:
+            - link [ref=e20]:
+              - /url: //github.com/darkwing
+          - listitem [ref=e21]:
+            - link [ref=e22]:
+              - /url: //linkedin.com/in/davidjameswalsh
+          - listitem
+        - generic [ref=e25]:
+          - generic [ref=e26]: Search
+          - searchbox "Search" [ref=e27]
+  - generic [ref=e29]:
+    - strong [ref=e30]: "Popular:"
+    - list [ref=e31]:
+      - listitem [ref=e32]:
+        - link "JavaScript Promises" [ref=e33]:
+          - /url: /promises
+      - listitem [ref=e34]:
+        - link "fetch API" [ref=e35]:
+          - /url: /fetch
+      - listitem [ref=e36]:
+        - link "React.js" [ref=e37]:
+          - /url: /tutorials/react
+      - listitem [ref=e38]:
+        - link "Cache API" [ref=e39]:
+          - /url: /cache
+      - listitem [ref=e40]:
+        - link "ES6 Features" [ref=e41]:
+          - /url: /es6-features
+      - listitem [ref=e42]:
+        - link "Node.js" [ref=e43]:
+          - /url: /tutorials/nodejs
+      - listitem [ref=e44]:
+        - link "JavaScript" [ref=e45]:
+          - /url: /tutorials/javascript
+      - listitem [ref=e46]:
+        - link "jQuery" [ref=e47]:
+          - /url: /tutorials/jquery
+  - main [ref=e50]:
+    - generic [ref=e51]:
+      - 'heading "Demo: Multiple File Upload Input" [level=1] [ref=e52]'
+      - generic [ref=e53]:
+        - text: Read
+        - link "Multiple File Upload Input" [ref=e54]:
+          - /url: https://davidwalsh.name/multiple-file-upload
+      - generic [ref=e55]:
+        - generic:
+          - link:
+            - /url: //twitter.com/share
+        - iframe [ref=e57]:
+          
+      - paragraph [ref=e58]: Description...
+      - paragraph [ref=e59]:
+        - strong [ref=e60]: "Upload Files:"
+        - button "Choose File" [ref=e61]
+      - paragraph [ref=e62]:
+        - strong [ref=e63]: "Files You Selected:"
+      - list [ref=e64]:
+        - listitem [ref=e65]: No Files Selected
+    - paragraph [ref=e66]:
+      - text: "Back to:"
+      - link "Multiple File Upload Input" [ref=e67]:
+        - /url: https://davidwalsh.name/multiple-file-upload
+```
