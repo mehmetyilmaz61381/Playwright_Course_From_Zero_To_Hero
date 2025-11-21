@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>GitHub Pages - Ziyaretçi Sayacı</title>
+  <style>
+    :root {
+      --bg: #0f1724;
+      --card: #0b1220;
+      --accent: #7c3aed;
+      --muted: #94a3b8;
+      --glass: rgba(255,255,255,0.03);
+    }
+    html,body{height:100%;}
+    body{
+      margin:0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg, #071129 0%, #071226 60%);
+      color:#e6eef8;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+    }
+    .card{
+      width:100%;
+      max-width:560px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:14px;
+      box-shadow: 0 8px 40px rgba(2,6,23,0.6);
+      padding:28px;
+      border:1px solid rgba(255,255,255,0.03);
+      backdrop-filter: blur(6px);
+    }
+    h1{ margin:0 0 8px 0; font-size:20px; letter-spacing: -0.2px; }
+    p.muted{ color:var(--muted); margin:0 0 18px 0; }
+    .counter {
+      display:flex;
+      align-items:center;
+      gap:16px;
+      font-size:48px;
+      font-weight:700;
+      padding:18px;
+      border-radius:12px;
+      background: linear-gradient(90deg, rgba(124,58,237,0.12), rgba(124,58,237,0.06));
+      width:fit-content;
+    }
+    .meta { margin-top:14px; color:var(--muted); font-size:13px;}
+    .small { font-size:12px; color:var(--muted); margin-top:10px;}
+    .badge { background:rgba(255,255,255,0.03); padding:6px 10px; border-radius:999px; font-size:13px; }
+    .error { color:#ffb4b4; margin-top:10px; font-size:13px; }
+    footer{ margin-top:18px; font-size:13px; color:var(--muted); display:flex; justify-content:space-between; align-items:center; }
+    a { color: #c7b3ff; text-decoration:none; }
+  </style>
+</head>
+<body>
+  <main class="card" role="main">
+    <h1>Hoş geldiniz 👋</h1>
+    <p class="muted">Bu sayfa ziyaretçi sayısını gösteriyor. Aşağıdaki sayaç, CountAPI kullanılarak sunucusuz şekilde tutulur. (Yedek: tarayıcı bazlı sayaç)</p>
+
+    <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">
+      <div id="counter" class="counter" aria-live="polite" title="Ziyaretçi sayısı">
+        <span id="count">—</span>
+        <span class="badge" id="type">yükleniyor</span>
+      </div>
+
+      <div style="flex:1; min-width:180px;">
+        <div class="meta">Son güncelleme: <span id="updated">—</span></div>
+        <div class="small">Not: Eğer CountAPI'ye erişilemezse, sayfa tarayıcıya özel bir yedek sayaç gösterir.</div>
+      </div>
+    </div>
+
+    <div id="error" class="error" role="status" hidden></div>
+
+    <footer>
+      <div>Sayfa: <strong>index.html</strong></div>
+      <div>Deploy: GitHub Pages</div>
+    </footer>
+  </main>
+
+  <script>
+    (function () {
+      // --- AYARLAR ---
+      // Burayı istersen kendi benzersiz namespace ve key ile değiştir:
+      const NAMESPACE = "githubpages_example_namespace"; // örn: "my-github-username"
+      const KEY = "visits"; // örn: "homepage-visitors"
+      // ----------------
+
+      const countEl = document.getElementById("count");
+      const typeEl = document.getElementById("type");
+      const updatedEl = document.getElementById("updated");
+      const errorEl = document.getElementById("error");
+
+      // CountAPI endpoint: https://api.countapi.xyz/hit/{namespace}/{key}
+      const endpoint = `https://api.countapi.xyz/hit/${encodeURIComponent(NAMESPACE)}/${encodeURIComponent(KEY)}`;
+
+      // Fallback localStorage key
+      const LS_KEY = `local_counter_${NAMESPACE}_${KEY}`;
+
+      function showError(msg) {
+        errorEl.hidden = false;
+        errorEl.textContent = msg;
+      }
+
+      function showCount(value, source) {
+        countEl.textContent = value.toLocaleString(); // 1.234 format
+        typeEl.textContent = source;
+        updatedEl.textContent = new Date().toLocaleString();
+      }
+
+      // İlk deneme: CountAPI ile artır ve değeri al
+      fetch(endpoint, { method: "GET" })
+        .then(resp => {
+          if (!resp.ok) throw new Error("CountAPI isteği başarısız: " + resp.status);
+          return resp.json();
+        })
+        .then(data => {
+          // CountAPI döner: { value: 123, ... }
+          if (typeof data.value === "number") {
+            showCount(data.value, "global - CountAPI");
+          } else {
+            throw new Error("Beklenmeyen CountAPI yanıtı");
+          }
+        })
+        .catch(async (err) => {
+          console.warn("CountAPI hatası:", err);
+          showError("CountAPI'ye ulaşılamadı, tarayıcı içi sayaca geçiliyor.");
+
+          // local fallback: localStorage'ta sakla ve 1 arttır
+          try {
+            let current = parseInt(localStorage.getItem(LS_KEY) || "0", 10);
+            current = isNaN(current) ? 0 : current;
+            current += 1;
+            localStorage.setItem(LS_KEY, String(current));
+            showCount(current, "yerel - browser");
+          } catch (e) {
+            showError("Hem CountAPI hem localStorage kullanılamıyor: " + e.message);
+            countEl.textContent = "0";
+            typeEl.textContent = "hata";
+          }
+        });
+
+      // İsteğe bağlı: kullanıcı sayfayı yenilerse local count'ı göstermek istersen:
+      // (Bu blok sadece local fallback sonrası daha temiz görünüm sağlar)
+      window.addEventListener("focus", () => {
+        // Güncelleme isteği: sadece görsel güncelleme için CountAPI'yi tekrar dene (ara)
+        // Ancak kullanıcı tekrar açtığında CountAPI her seferinde bir arttıracağından dikkatli kullan.
+      });
+    })();
+  </script>
+</body>
+</html>

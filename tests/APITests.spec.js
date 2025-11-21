@@ -1,7 +1,54 @@
 import { expect, test } from "@playwright/test";
 
+var userid; 
+
+test("Get users", async ({ request }) => {
+  const response = await request.get('https://reqres.in/api/users?page=2')
+  console.log(await response.json())
+  expect(response.status()).toBe(200)
+})
+
+
+test.only("Create user", async ({ request }) => {
+
+  const response = await request.post('https://reqres.in/api/users',
+    {
+      data: { "name": "Yilmaz", "job": "trainer" },
+      headers: { "Accept": "application/json" }
+    }
+  );
+
+  console.log(await response.json());
+  expect(response.status()).toBe(201);
+
+  var res = await response.json();
+  userid = res.id;
+
+});
+
+
+
+test("Update user", async ({ request }) => {
+  const response = await request.put('https://reqres.in/api/users/' + userid,
+    {
+      data: { "name": "Mehmet", "job": "engineer" },
+      headers: { "Accept": "application/json" }
+    }
+  );
+
+  console.log(await response.json());
+  expect(response.status()).toBe(200);
+});
+
+
+test("Delete user", async ({ request }) => {
+  const response = await request.delete('https://reqres.in/api/users/' + userid);
+  expect(response.status()).toBe(204);
+});
+
 // Create
-test("Create user", async ({ request, baseURL }) => {
+/*
+test.skip("Create user2", async ({ request, baseURL }) => {
     const _response = await request.post(`${baseURL}`, {
         data: {
             "name": "xyz}",
@@ -25,3 +72,4 @@ test("Create user", async ({ request, baseURL }) => {
 // test("", async ({ page }) => {
 //     await page.request.get("")
 // })
+*/
